@@ -1,8 +1,8 @@
 import React from 'react';
-import ListItem from 'components/ListItem';
-import styled from '@emotion/styled';
 import {useSelector} from 'react-redux';
+import styled from '@emotion/styled';
 import {pollListSelector} from 'selectors';
+import ListItem from 'components/ListItem';
 
 const List = styled.div({
   width: '100%',

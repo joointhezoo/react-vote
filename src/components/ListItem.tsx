@@ -1,13 +1,13 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
 import styled from '@emotion/styled';
 import {css} from '@emotion/core';
+import {Poll} from 'ducks';
 import Title from 'components/base/Title';
 import Button from 'components/base/Button';
 import CheckFilled from 'components/svg/CheckFilled';
 import CheckEmpty from 'components/svg/CheckEmpty';
 import {userNameSelector} from 'selectors';
-import {useSelector} from 'react-redux';
-import {Poll} from 'ducks';
 
 const Item = styled.li({
   display: 'flex',

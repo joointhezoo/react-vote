@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import Modal from 'components/base/Modal';
-import Button from 'components/base/Button';
+import {useDispatch} from 'react-redux';
+import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import {css} from '@emotion/core';
-import Delete from 'components/svg/Delete';
-import { useForm } from 'react-hook-form';
 import {addPoll} from 'ducks';
-import {useDispatch} from 'react-redux';
+import Modal from 'components/base/Modal';
+import Button from 'components/base/Button';
+import Delete from 'components/svg/Delete';
 
 const Input = styled.input({
   width: 'calc(100% - 16px)',
