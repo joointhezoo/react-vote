@@ -3,7 +3,8 @@ import {createAction, createReducer} from '@reduxjs/toolkit';
 import user from 'ducks/user';
 
 export const addPoll = createAction<Poll>('ADD_POLL');
-export const updatePoll = createAction<Poll>('UPDATE_POLL');
+export const deletePoll = createAction<Pick<Poll, 'id'>>('DELETE_POLL');
+export const updatePoll = createAction<Poll[]>('UPDATE_POLL');
 export const toggleModal = createAction('TOGGLE_MODAL');
 
 
@@ -59,11 +60,7 @@ const poll = createReducer(INITIAL_STATE, builder => {
       state.openModal = !state.openModal;
     })
     .addCase(updatePoll, (state, action) => {
-      console.error(action, 'ducks');
-      state.poll = [
-        ...state.poll,
-        action.payload
-      ]
+      state.poll = action.payload
     })
 });
 

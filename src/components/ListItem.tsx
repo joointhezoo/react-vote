@@ -1,8 +1,8 @@
-import React from 'react';
-import {useSelector} from 'react-redux';
+import React, {useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import styled from '@emotion/styled';
 import {css} from '@emotion/core';
-import {Poll} from 'ducks';
+import {Poll, deletePoll} from 'ducks';
 import Title from 'components/base/Title';
 import Button from 'components/base/Button';
 import CheckFilled from 'components/svg/CheckFilled';
@@ -33,9 +33,11 @@ const Item = styled.li({
 });
 
 export default ({id, status, question, writer, options}: Poll) => {
+  const dispatch = useDispatch();
   const name = useSelector(userNameSelector);
   const isEnd = status === 'ended';
 
+  const _handleDelete = useCallback(id => dispatch(deletePoll(id)), [dispatch]);
   return (
     <div css={css`
       margin: 16px 0;
@@ -49,7 +51,12 @@ export default ({id, status, question, writer, options}: Poll) => {
           )}
           {question}
         </div>
-        {writer === name && <Button theme="line">Modify</Button>}
+        {writer === name && (
+          <div>
+            <Button theme="line">Modify</Button>
+            <Button theme="line" onClick={() => _handleDelete(id)}>Delete</Button>
+          </div>
+        )}
       </Title>
       <ul>
         {options.map(({title, voter}, index) => {
