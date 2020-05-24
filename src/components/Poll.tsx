@@ -50,9 +50,12 @@ export default ({onClose}: Props) => {
   const onSubmit = handleSubmit((value) => {
     const optionsKey = Object.keys(value).filter(val => val.startsWith('option'));
     const options = optionsKey.map((key) => ({title: value[key], voter: []}));
+    const {question, startDate, endDate} = value;
     dispatch(addPoll({
-      question: value.question,
-      options
+      question,
+      options,
+      startDate,
+      endDate
     }));
   });
 
@@ -86,7 +89,17 @@ export default ({onClose}: Props) => {
         <Title>Add Your Poll</Title>
         <form onSubmit={onSubmit}>
           <Label>Question</Label>
-          <Input name="question" ref={register} />
+          <Input name="question" ref={register} placeholder="write your question"/>
+          <div css={css`display: flex; justify-content: space-between;`}>
+            <div css={css`width: 49%;`}>
+              <Label>Start Date</Label>
+              <Input name="startDate" ref={register} placeholder="YYYY-MM-DD HH:MM"/>
+            </div>
+            <div css={css`width: 49%;`}>
+              <Label>End Date</Label>
+              <Input name="endDate" ref={register} placeholder="YYYY-MM-DD HH:MM"/>
+            </div>
+          </div>
           {options.map((_, i) => {
             return (
               <>

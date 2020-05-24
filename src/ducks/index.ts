@@ -2,7 +2,7 @@ import {combineReducers} from 'redux';
 import {createAction, createReducer} from '@reduxjs/toolkit';
 import user from 'ducks/user';
 
-export const addPoll = createAction<Pick<Poll, 'question'| 'options'>>('ADD_POLL');
+export const addPoll = createAction<Pick<Poll, 'question' | 'options' | 'startDate' | 'endDate'>>('ADD_POLL');
 export const deletePoll = createAction<string>('DELETE_POLL');
 export const updatePoll = createAction<{[key: string]: Poll}>('UPDATE_POLL');
 export const toggleModal = createAction('TOGGLE_MODAL');
@@ -15,6 +15,8 @@ interface SelectOption {
 
 export interface Poll {
   id: string;
+  startDate?: string;
+  endDate?: string;
   writer: string;
   status: 'pending' | 'ongoing' | 'ended';
   question: string;
