@@ -9,6 +9,7 @@ export const updatePoll = createAction<{[key: string]: Poll}>('UPDATE_POLL');
 export const toggleModal = createAction('TOGGLE_MODAL');
 export const selectOption = createAction<SelectOption>('SELECT_OPTION');
 export const selectPoll = createAction<string | null>('SELECT_POLL');
+export const votePoll = createAction<string>('VOTE_POLL');
 
 interface SelectOption {
   id: string;
@@ -23,6 +24,7 @@ export interface Poll {
   status: 'pending' | 'ongoing' | 'ended';
   question: string;
   options: OptionItem[];
+  voted: boolean;
 }
 
 export interface OptionItem {
@@ -46,12 +48,15 @@ export const INITIAL_STATE: State = {
       id: 'sdfsdf22',
       writer: 'kai7v2ut',
       question: 'Choose Friday night activity',
+      startDate: '2020-02-04 04:20',
+      endDate: '2020-02-04 04:25',
       options: [
         {title: 'watching Movie', voter: ['alex', 'chris']},
         {title: 'escape room', voter: ['jin']},
         {title: 'Bowling', voter: ['kai7v2ut']},
       ],
       status: 'ongoing',
+      voted: false
     },
     'asd123a':  {
       id: 'asd123a',
@@ -63,6 +68,7 @@ export const INITIAL_STATE: State = {
         {title: 'salad', voter: []}
       ],
       status: 'ended',
+      voted: true
     }
   }
 };
@@ -77,6 +83,16 @@ const poll = createReducer(INITIAL_STATE, builder => {
     })
     .addCase(selectPoll, (state, action) => {
       state.selectedPoll = action.payload
+    })
+    .addCase(votePoll, (state, action) => {
+      console.error(action.payload);
+      state.poll = {
+        ...state.poll,
+        [action.payload]: {
+          ...state.poll[action.payload],
+          voted: true
+        }
+      }
     })
 });
 

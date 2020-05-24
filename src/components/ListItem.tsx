@@ -1,52 +1,16 @@
-import React, {useCallback, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import cn from 'classnames';
-import styled from '@emotion/styled';
+import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
 import {css} from '@emotion/core';
-import {Poll, deletePoll, selectOption, selectPoll, toggleModal, OptionItem} from 'ducks';
+import {Poll} from 'ducks';
 import {userNameSelector} from 'selectors';
 import Title from 'components/base/Title';
-import Button from 'components/base/Button';
 import Chevron from 'components/svg/Chevron';
+import WriterEdit from 'components/WriterEdit';
+import ListItemDetail from 'components/ListItemDetail';
 
-const Item = styled.li({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '16px',
-  borderTop: '1px solid #ddd',
-  background: '#fff',
-  cursor: 'pointer',
-  '&.ended': {
-    cursor: 'not-allowed'
-  },
-  '& p': {
-    textAlign: 'left',
-    flex: 1
-  },
-  '& svg': {
-    margin: '0 8px 0 0'
-  },
-  '& span': {
-    color: '#444',
-    justifyContent: 'flex-end',
-    margin: '0 8px 0 0',
-    textAlign: 'right'
-  }
-});
-
-export default ({id, status, question, writer, options}: Poll) => {
-  const dispatch = useDispatch();
+export default ({id, voted, status, startDate, endDate, question, writer, options}: Poll) => {
   const [open, toggleOpen] = useState(false);
   const name = useSelector(userNameSelector);
-  const isEnd = status === 'ended';
-
-  const _handleModify = useCallback(id => {
-    dispatch(selectPoll(id));
-    dispatch(toggleModal());
-  }, [dispatch]);
-
-  const _handleDelete = useCallback(id => dispatch(deletePoll(id)), [dispatch]);
 
   const _renderTitle = () => {
     return (
@@ -63,6 +27,10 @@ export default ({id, status, question, writer, options}: Poll) => {
         <div css={css`flex: 1;`}>
           {question}
         </div>
+        <span css={css`letter-spacing: -1.2px; font-size: 12px; text-align: right; margin: 0 8px 0 0;`}>
+          {startDate}<br/>
+          {!!endDate && `~${endDate}`}
+        </span>
         <span css={css`
           font-size :12px;
           padding: 4px;
@@ -72,44 +40,16 @@ export default ({id, status, question, writer, options}: Poll) => {
     )
   };
 
-  const _handleCheck = (index: number) => {
-    if (status === 'ongoing') {
-      dispatch(selectOption({id, index}))
-    }
-  };
-
-  const _renderDetail = () => {
-    return (
-      <ul>
-        {options.map(({title, voter}: OptionItem, index) => {
-          const selected = voter.includes(name);
-          const voteNum = voter.length;
-          return (
-            <Item className={cn(status)} key={`${id}-${index}`} onClick={() => _handleCheck(index)}>
-              <input type="radio" value={title} checked={selected}/>
-              <p css={css`flex:1; text-align: left;`}>{title}</p>
-              {isEnd && voteNum > 0 && <span><span role="img" aria-label="hand">🖐🏻</span>{voteNum}&nbsp;</span>}
-            </Item>
-          )
-        })}
-      </ul>
-    )
-  };
-
-  const _renderEditor = () => {
-    return (
-      <div>
-        <Button theme="line" onClick={() => _handleModify(id)}>Modify</Button>
-        <Button theme="line" onClick={() => _handleDelete(id)}>Delete</Button>
-      </div>
-    )
-  };
-
+  const pollData = {id, voted, status, startDate, endDate, question, writer, options};
   return (
     <div css={css`margin: 16px 0;`}>
       {_renderTitle()}
-      {open && _renderDetail()}
-      {open && writer === name && _renderEditor()}
+      {open && (
+        <>
+          <ListItemDetail {...pollData}/>
+          {writer === name && <WriterEdit id={id}/>}
+        </>
+      )}
     </div>
   );
 };
