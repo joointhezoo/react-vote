@@ -42,10 +42,9 @@ export default ({id, status, question, writer, options}: Poll) => {
   const isEnd = status === 'ended';
 
   const _handleDelete = useCallback(id => dispatch(deletePoll(id)), [dispatch]);
-  return (
-    <div css={css`
-      margin: 16px 0;
-    `}>
+
+  const _renderTitle = () => {
+    return (
       <Title>
          <span css={css`
           width: 56px;
@@ -65,27 +64,51 @@ export default ({id, status, question, writer, options}: Poll) => {
         `}>{writer}</span>
         <Chevron onClick={() => toggleOpen(!open)} fill={'#fff'} pointAt={open ? 'up' : 'down'}/>
       </Title>
-      {open && (
-        <ul>
-          {options.map(({title, voter}, index) => {
-            const selected = voter.includes(name);
-            const voteNum = voter.length;
-            return (
-              <Item className={cn(status)} key={`${id}-${index}`} onClick={() => {}}>
-                <input type="radio" value={title} checked={selected}/>
-                <p css={css`flex:1; text-align: left;`}>{title}</p>
-                {isEnd && voteNum > 0 && <span><span role="img" aria-label="hand">🖐🏻</span>{voteNum}&nbsp;</span>}
-              </Item>
-            )
-          })}
-          {writer === name && (
-            <div>
-              <Button theme="line">Modify</Button>
-              <Button theme="line" onClick={() => _handleDelete(id)}>Delete</Button>
-            </div>
-          )}
-        </ul>
-      )}
+    )
+  };
+
+  const _handleCheck = (index: number) => {
+    const temp =  options.map((option, i) => {
+      return {
+        ...option,
+        voter: i === index ? option.voter.includes(name) ? option.voter : [...option.voter, name] :
+          option.voter.includes(name) ? option.voter.splice(i, 1) : option.voter
+      };
+    });
+  };
+
+  const _renderDetail = () => {
+    return (
+      <ul>
+        {options.map(({title, voter}, index) => {
+          const selected = voter.includes(name);
+          const voteNum = voter.length;
+          return (
+            <Item className={cn(status)} key={`${id}-${index}`} onClick={() => _handleCheck(index)}>
+              <input type="radio" value={title} checked={selected}/>
+              <p css={css`flex:1; text-align: left;`}>{title}</p>
+              {isEnd && voteNum > 0 && <span><span role="img" aria-label="hand">🖐🏻</span>{voteNum}&nbsp;</span>}
+            </Item>
+          )
+        })}
+      </ul>
+    )
+  };
+
+  const _renderEditor = () => {
+    return (
+      <div>
+        <Button theme="line">Modify</Button>
+        <Button theme="line" onClick={() => _handleDelete(id)}>Delete</Button>
+      </div>
+    )
+  };
+
+  return (
+    <div css={css`margin: 16px 0;`}>
+      {_renderTitle()}
+      {open && _renderDetail()}
+      {open && writer === name && _renderEditor()}
     </div>
   );
 };
