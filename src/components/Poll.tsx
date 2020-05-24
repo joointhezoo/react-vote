@@ -17,17 +17,18 @@ const Input = styled.input({
   borderRadius: '4px',
   color: '#020202',
   transition: 'all 0.3s ease',
-  margin: '8px 0'
+  margin: '8px 0 0'
 });
 
 const Title = styled.p({
   color: '#020202',
   fontSize: '24px',
   fontWeight: 700,
-  marginBottom: '16px'
+  margin: '16px'
 });
 
 const Label = styled.label({
+  margin: '8px 0 0',
   color: '#020202',
   fontSize: '14px',
   fontWeight: 700,
@@ -40,7 +41,7 @@ const Label = styled.label({
 const Warning = styled.label({
   color: '#f44336',
   fontSize: '12px',
-  margin: '8px 0 4px',
+  margin: '4px 0',
 });
 interface Props {
   onClose: () => void;
@@ -48,10 +49,18 @@ interface Props {
 export default ({onClose}: Props) => {
   const dispatch = useDispatch();
   const selectedPoll = useSelector(selectedPollSelector);
-  const {register, handleSubmit, setValue} = useForm();
+  const {register, handleSubmit, setValue, getValues, errors} = useForm({
+    validateCriteriaMode: "all"
+  });
   const [options, setOptions] = useState(selectedPoll ?
     selectedPoll.options.flatMap(({title}) => ({title})) :
     [{title: ""}, {title: ""}, {title: ""}]);
+
+  const [msg, setMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (msg) setTimeout(() => setMsg(null), 2000);
+  }, [msg]);
 
   useEffect(() => {
     if (selectedPoll) {
@@ -83,12 +92,6 @@ export default ({onClose}: Props) => {
       dispatch(addPoll(data));
   });
 
-  const [msg, setMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (msg) setTimeout(() => setMsg(null), 2000);
-  }, [msg]);
-
   const _addOptions = () => {
     setOptions([...options, {title: ""}])
   };
@@ -108,22 +111,50 @@ export default ({onClose}: Props) => {
         <Title>{selectedPoll? 'Modify' : 'Add'} Your Poll</Title>
         <form onSubmit={onSubmit}>
           <Label>Question</Label>
-          <Input name="question" ref={register} placeholder="write your question"/>
+          <Input
+            name="question"
+            placeholder="write your question"
+            ref={register({
+              validate: value => value !== ""
+            })}
+          />
+          {errors.question && <Warning>question is required</Warning>}
           <div css={css`display: flex; justify-content: space-between;`}>
             <div css={css`width: 49%;`}>
               <Label>Start Date</Label>
-              <Input name="startDate" ref={register} placeholder="YYYY-MM-DD HH:MM"/>
+              <Input
+                name="startDate"
+                placeholder="YYYY-MM-DD HH:MM"
+                ref={register({
+                  validate: value => value !== "",
+                })}
+              />
+              {errors.startDate && <Warning>required start Date</Warning>}
             </div>
             <div css={css`width: 49%;`}>
               <Label>End Date</Label>
-              <Input name="endDate" ref={register} placeholder="YYYY-MM-DD HH:MM"/>
+              <Input
+                name="endDate"
+                placeholder="YYYY-MM-DD HH:MM"
+                ref={register({
+                  validate: {
+                    required: value => value !== "",
+                    wrongDate: value => getEpochTime(getValues("startDate")) < getEpochTime(value)
+                  }
+                })}
+              />
+              {errors.endDate?.type === 'required' && <Warning>required End Date</Warning>}
+              {errors.endDate?.type === 'wrongDate' && <Warning>can be earlier than start date</Warning>}
             </div>
           </div>
           {options.map((_, i) => {
             return (
               <>
                 <Label>Option{i+1}<Delete onClick={() => _deleteOptions(i)}/></Label>
-                <Input name={`option${i+1}`} ref={register}/>
+                <Input name={`option${i+1}`} ref={register({
+                  validate: value => value !== ""
+                })}/>
+                {errors[`option${i+1}`] && <Warning>fill in option</Warning>}
               </>
             )
           })}
