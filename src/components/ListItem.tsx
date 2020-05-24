@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import cn from 'classnames';
 import styled from '@emotion/styled';
 import {css} from '@emotion/core';
-import {Poll, deletePoll, selectOption} from 'ducks';
+import {Poll, deletePoll, selectOption, selectPoll, toggleModal, OptionItem} from 'ducks';
 import {userNameSelector} from 'selectors';
 import Title from 'components/base/Title';
 import Button from 'components/base/Button';
@@ -41,6 +41,11 @@ export default ({id, status, question, writer, options}: Poll) => {
   const name = useSelector(userNameSelector);
   const isEnd = status === 'ended';
 
+  const _handleModify = useCallback(id => {
+    dispatch(selectPoll(id));
+    dispatch(toggleModal());
+  }, [dispatch]);
+
   const _handleDelete = useCallback(id => dispatch(deletePoll(id)), [dispatch]);
 
   const _renderTitle = () => {
@@ -74,7 +79,7 @@ export default ({id, status, question, writer, options}: Poll) => {
   const _renderDetail = () => {
     return (
       <ul>
-        {options.map(({title, voter}, index) => {
+        {options.map(({title, voter}: OptionItem, index) => {
           const selected = voter.includes(name);
           const voteNum = voter.length;
           return (
@@ -92,7 +97,7 @@ export default ({id, status, question, writer, options}: Poll) => {
   const _renderEditor = () => {
     return (
       <div>
-        <Button theme="line">Modify</Button>
+        <Button theme="line" onClick={() => _handleModify(id)}>Modify</Button>
         <Button theme="line" onClick={() => _handleDelete(id)}>Delete</Button>
       </div>
     )

@@ -6,12 +6,13 @@ import Header from 'components/Header';
 import {useDispatch, useSelector} from 'react-redux';
 import {modalSelector} from 'selectors';
 import Poll from 'components/Poll';
-import {toggleModal} from 'ducks';
+import {selectPoll, toggleModal} from 'ducks';
 
 export default () => {
   const dispatch = useDispatch();
   const openModal = useSelector(modalSelector);
-  const _toggleModal = useCallback(() => {
+  const _handleCloseModal = useCallback(() => {
+    dispatch(selectPoll(null));
     dispatch(toggleModal());
   }, [dispatch]);
   return (
@@ -23,8 +24,8 @@ export default () => {
       background: #eee;
     `}>
       <Header/>
-      <Button onClick={() => _toggleModal()}>Create</Button>
-      {openModal && <Poll onClose={_toggleModal}/>}
+      <Button onClick={() => _handleCloseModal()}>Create</Button>
+      {openModal && <Poll onClose={_handleCloseModal}/>}
       <List/>
     </div>
   );

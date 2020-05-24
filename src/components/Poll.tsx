@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import {css} from '@emotion/core';
@@ -7,6 +7,7 @@ import {addPoll} from 'ducks';
 import Modal from 'components/base/Modal';
 import Button from 'components/base/Button';
 import Delete from 'components/svg/Delete';
+import {selectedPollSelector} from 'selectors';
 
 const Input = styled.input({
   width: 'calc(100% - 16px)',
@@ -45,7 +46,20 @@ interface Props {
 }
 export default ({onClose}: Props) => {
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+  const selectedPoll = useSelector(selectedPollSelector);
+  const {register, handleSubmit, setValue} = useForm();
+  const [options, setOptions] = useState(selectedPoll ?
+    selectedPoll.options.flatMap(({title}) => ({title})) :
+    [{title: ""}, {title: ""}, {title: ""}]);
+
+  useEffect(() => {
+    if (selectedPoll) {
+      setValue('question', selectedPoll.question);
+      selectedPoll.options.forEach(({title}, i) => {
+        setValue(`option${i+1}`, title);
+      })
+    }
+  }, [selectedPoll]);
 
   const onSubmit = handleSubmit((value) => {
     const optionsKey = Object.keys(value).filter(val => val.startsWith('option'));
@@ -69,8 +83,6 @@ export default ({onClose}: Props) => {
     }
   }, [msg]);
 
-  const [options, setOptions] = useState([{title: ""}, {title: ""}, {title: ""}]);
-
   const _addOptions = () => {
     setOptions([...options, {title: ""}])
   };
@@ -86,7 +98,7 @@ export default ({onClose}: Props) => {
   return (
     <Modal onClose={onClose}>
       <div css={css`display: flex; flex-direction: column; width: 100%;`}>
-        <Title>Add Your Poll</Title>
+        <Title>{selectedPoll? 'Modify' : 'Add'} Your Poll</Title>
         <form onSubmit={onSubmit}>
           <Label>Question</Label>
           <Input name="question" ref={register} placeholder="write your question"/>
