@@ -64,7 +64,10 @@ export default ({onClose}: Props) => {
   const onSubmit = handleSubmit((value) => {
     const options = Object.keys(value)
       .filter(val => val.startsWith('option'))
-      .map((key) => ({title: value[key], voter: []}));
+      .map((key, index) => ({
+        title: value[key],
+        voter: [...selectedPoll ? selectedPoll.options[index]?.voter || [] : []]
+      }));
     const {question, startDate, endDate} = value;
     const data = {question, options, startDate, endDate};
     selectedPoll ?
@@ -75,16 +78,13 @@ export default ({onClose}: Props) => {
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (msg) {
-      setTimeout(() => {
-        setMsg(null)
-      }, 2000)
-    }
+    if (msg) setTimeout(() => setMsg(null), 2000);
   }, [msg]);
 
   const _addOptions = () => {
     setOptions([...options, {title: ""}])
   };
+
   const _deleteOptions = (i: number) => {
     if (options.length > 3) {
       const removeItem = options.filter((_, index) => index !== i);
