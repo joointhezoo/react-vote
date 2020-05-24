@@ -3,6 +3,7 @@ import {createAction, createReducer} from '@reduxjs/toolkit';
 import user from 'ducks/user';
 
 export const addPoll = createAction<Pick<Poll, 'question' | 'options' | 'startDate' | 'endDate'>>('ADD_POLL');
+export const modifyPoll = createAction<Pick<Poll, 'question' | 'options' | 'startDate' | 'endDate' | 'id'>>('MODIFY_POLL');
 export const deletePoll = createAction<string>('DELETE_POLL');
 export const updatePoll = createAction<{[key: string]: Poll}>('UPDATE_POLL');
 export const toggleModal = createAction('TOGGLE_MODAL');

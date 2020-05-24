@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import {css} from '@emotion/core';
-import {addPoll} from 'ducks';
+import {addPoll, modifyPoll} from 'ducks';
 import Modal from 'components/base/Modal';
 import Button from 'components/base/Button';
 import Delete from 'components/svg/Delete';
@@ -59,18 +59,17 @@ export default ({onClose}: Props) => {
         setValue(`option${i+1}`, title);
       })
     }
-  }, [selectedPoll]);
+  }, [selectedPoll, setValue]);
 
   const onSubmit = handleSubmit((value) => {
-    const optionsKey = Object.keys(value).filter(val => val.startsWith('option'));
-    const options = optionsKey.map((key) => ({title: value[key], voter: []}));
+    const options = Object.keys(value)
+      .filter(val => val.startsWith('option'))
+      .map((key) => ({title: value[key], voter: []}));
     const {question, startDate, endDate} = value;
-    dispatch(addPoll({
-      question,
-      options,
-      startDate,
-      endDate
-    }));
+    const data = {question, options, startDate, endDate};
+    selectedPoll ?
+      dispatch(modifyPoll({...data, id: selectedPoll.id})) :
+      dispatch(addPoll(data));
   });
 
   const [msg, setMsg] = useState<string | null>(null);
@@ -123,7 +122,7 @@ export default ({onClose}: Props) => {
           <div css={css`display: flex; flex-direction: column`}>
             <Button theme="line" type="button" onClick={() => _addOptions()}>Add more Options</Button>
             {!!msg && <Warning>{msg}</Warning>}
-            <Button type="submit">Create</Button>
+            <Button type="submit">{selectedPoll ? 'Modify' : 'Create'}</Button>
           </div>
         </form>
       </div>

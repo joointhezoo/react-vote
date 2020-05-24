@@ -1,6 +1,6 @@
 import {Epic, combineEpics} from 'redux-observable';
 import {filter, map, switchMap} from 'rxjs/operators';
-import {addPoll, deletePoll, toggleModal, updatePoll, selectOption, OptionItem} from 'ducks';
+import {addPoll, deletePoll, toggleModal, updatePoll, selectOption, OptionItem, modifyPoll} from 'ducks';
 import {uniquePollId} from 'utils';
 
 const addPollList$$: Epic = (action$, state$) => action$.pipe(
@@ -59,8 +59,27 @@ const selectOption$$: Epic = (action$, state$) => action$.pipe(
   })
 );
 
+const modifyPoll$$: Epic = (action$, state$) => action$.pipe(
+  filter(modifyPoll.match),
+  switchMap(({payload}) => {
+    const {poll: {poll}} = state$.value;
+    const pollData = {
+      ...poll,
+      [payload.id]: {
+        ...poll[payload.id],
+        ...payload
+      }
+    };
+    return [
+      updatePoll(pollData),
+      toggleModal()
+    ]
+  })
+);
+
 export default combineEpics(
   addPollList$$,
   deletePollList$$,
   selectOption$$,
+  modifyPoll$$,
 );
