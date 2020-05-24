@@ -8,7 +8,7 @@ import Modal from 'components/base/Modal';
 import Button from 'components/base/Button';
 import Delete from 'components/svg/Delete';
 import {selectedPollSelector} from 'selectors';
-import {getEpochTime} from 'utils';
+import {DateYYYYMMDDHHMM, getEpochTime} from 'utils';
 
 const Input = styled.input({
   width: 'calc(100% - 16px)',
@@ -56,6 +56,8 @@ export default ({onClose}: Props) => {
   useEffect(() => {
     if (selectedPoll) {
       setValue('question', selectedPoll.question);
+      setValue('startDate', DateYYYYMMDDHHMM(selectedPoll.startDate));
+      setValue('endDate', DateYYYYMMDDHHMM(selectedPoll.endDate));
       selectedPoll.options.forEach(({title}, i) => {
         setValue(`option${i+1}`, title);
       })
