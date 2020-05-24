@@ -73,7 +73,9 @@ export default ({id, status, question, writer, options}: Poll) => {
   };
 
   const _handleCheck = (index: number) => {
-    dispatch(selectOption({id, index}))
+    if (status === 'ongoing') {
+      dispatch(selectOption({id, index}))
+    }
   };
 
   const _renderDetail = () => {

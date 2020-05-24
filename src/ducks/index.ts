@@ -49,7 +49,6 @@ export const INITIAL_STATE: State = {
         {title: 'watching Movie', voter: ['alex', 'chris']},
         {title: 'escape room', voter: ['jin']},
         {title: 'Bowling', voter: ['kai7v2ut']},
-        {title: 'Bwwowling', voter: ['kai7v2ut']},
       ],
       status: 'ongoing',
     },
