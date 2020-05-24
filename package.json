@@ -21,6 +21,7 @@
     "@types/styled-jsx": "^2.2.8",
     "classnames": "^2.2.6",
     "customize-cra": "^0.9.1",
+    "date-fns": "^2.14.0",
     "emotion": "^10.0.27",
     "lodash": "^4.17.15",
     "react": "^16.13.1",

@@ -5,7 +5,7 @@ import {uniquePollId} from 'utils';
 
 const addPollList$$: Epic = (action$, state$) => action$.pipe(
   filter(addPoll.match),
-  switchMap(({payload: {question, options}}) => {
+  switchMap(({payload: {startDate, endDate, question, options}}) => {
     const {poll: {poll}, user: {userName}} = state$.value;
     const makeId = uniquePollId();
     const pollData = {
@@ -15,6 +15,8 @@ const addPollList$$: Epic = (action$, state$) => action$.pipe(
         writer: userName,
         question,
         options,
+        startDate,
+        endDate,
         status: 'pending',
       }
     };

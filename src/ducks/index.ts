@@ -18,8 +18,8 @@ interface SelectOption {
 
 export interface Poll {
   id: string;
-  startDate?: string;
-  endDate?: string;
+  startDate: number;
+  endDate: number;
   writer: string;
   status: 'pending' | 'ongoing' | 'ended';
   question: string;
@@ -48,8 +48,8 @@ export const INITIAL_STATE: State = {
       id: 'sdfsdf22',
       writer: 'kai7v2ut',
       question: 'Choose Friday night activity',
-      startDate: '2020-02-04 04:20',
-      endDate: '2020-02-04 04:25',
+      startDate: 1590332400000,
+      endDate: 1590505200000,
       options: [
         {title: 'watching Movie', voter: ['alex', 'chris']},
         {title: 'escape room', voter: ['jin']},
@@ -61,6 +61,8 @@ export const INITIAL_STATE: State = {
     'asd123a':  {
       id: 'asd123a',
       writer: 'sdlf23sd',
+      startDate: 0,
+      endDate: 0,
       question: 'what do you want to eat for lunch?',
       options: [
         {title: 'pizza', voter: ['alex', 'chris', 'kai7v2ut']},

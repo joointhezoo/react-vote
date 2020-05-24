@@ -7,6 +7,7 @@ import Title from 'components/base/Title';
 import Chevron from 'components/svg/Chevron';
 import WriterEdit from 'components/WriterEdit';
 import ListItemDetail from 'components/ListItemDetail';
+import {DateYYYYMMDDHHMM} from 'utils';
 
 export default ({id, voted, status, startDate, endDate, question, writer, options}: Poll) => {
   const [open, toggleOpen] = useState(false);
@@ -28,8 +29,7 @@ export default ({id, voted, status, startDate, endDate, question, writer, option
           {question}
         </div>
         <span css={css`letter-spacing: -1.2px; font-size: 12px; text-align: right; margin: 0 8px 0 0;`}>
-          {startDate}<br/>
-          {!!endDate && `~${endDate}`}
+          {DateYYYYMMDDHHMM(startDate)}<br/>~{DateYYYYMMDDHHMM(endDate)}
         </span>
         <span css={css`
           font-size :12px;
