@@ -7,8 +7,6 @@ import {Poll, deletePoll} from 'ducks';
 import {userNameSelector} from 'selectors';
 import Title from 'components/base/Title';
 import Button from 'components/base/Button';
-import CheckFilled from 'components/svg/CheckFilled';
-import CheckEmpty from 'components/svg/CheckEmpty';
 import Chevron from 'components/svg/Chevron';
 
 const Item = styled.li({
@@ -74,8 +72,8 @@ export default ({id, status, question, writer, options}: Poll) => {
             const voteNum = voter.length;
             return (
               <Item className={cn(status)} key={`${id}-${index}`} onClick={() => {}}>
-                {selected ? <CheckFilled/> : <CheckEmpty/>}
-                <p>{title}</p>
+                <input type="radio" value={title} checked={selected}/>
+                <p css={css`flex:1; text-align: left;`}>{title}</p>
                 {isEnd && voteNum > 0 && <span><span role="img" aria-label="hand">🖐🏻</span>{voteNum}&nbsp;</span>}
               </Item>
             )
