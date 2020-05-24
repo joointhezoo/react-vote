@@ -2,18 +2,22 @@ import {combineReducers} from 'redux';
 import {createAction, createReducer} from '@reduxjs/toolkit';
 import user from 'ducks/user';
 
-export const addPoll = createAction<Poll>('ADD_POLL');
-export const deletePoll = createAction<Pick<Poll, 'id'>>('DELETE_POLL');
-export const updatePoll = createAction<Poll[]>('UPDATE_POLL');
+export const addPoll = createAction<Pick<Poll, 'question'| 'options'>>('ADD_POLL');
+export const deletePoll = createAction<string>('DELETE_POLL');
+export const updatePoll = createAction<{[key: string]: Poll}>('UPDATE_POLL');
 export const toggleModal = createAction('TOGGLE_MODAL');
-export const selectOption = createAction<any>('SELECT_OPTION');
+export const selectOption = createAction<SelectOption>('SELECT_OPTION');
 
+interface SelectOption {
+  id: string;
+  index: number;
+}
 
 export interface Poll {
-  id?: string;
-  writer?: string;
-  status?: 'pending' | 'ongoing' | 'ended';
-  question?: string;
+  id: string;
+  writer: string;
+  status: 'pending' | 'ongoing' | 'ended';
+  question: string;
   options: OptionItem[];
 }
 
@@ -24,13 +28,15 @@ export interface OptionItem {
 
 export interface State {
   openModal: boolean;
-  poll: Poll[];
+  poll: {
+    [key: string]: Poll;
+  };
 }
 
 export const INITIAL_STATE: State = {
   openModal: false,
-  poll: [
-    {
+  poll: {
+    'sdfsdf22': {
       id: 'sdfsdf22',
       writer: 'kai7v2ut',
       question: 'Choose Friday night activity',
@@ -41,7 +47,7 @@ export const INITIAL_STATE: State = {
       ],
       status: 'ongoing',
     },
-    {
+    'asd123a':  {
       id: 'asd123a',
       writer: 'sdlf23sd',
       question: 'what do you want to eat for lunch?',
@@ -52,7 +58,7 @@ export const INITIAL_STATE: State = {
       ],
       status: 'ended',
     }
-  ]
+  }
 };
 
 const poll = createReducer(INITIAL_STATE, builder => {
@@ -62,9 +68,6 @@ const poll = createReducer(INITIAL_STATE, builder => {
     })
     .addCase(updatePoll, (state, action) => {
       state.poll = action.payload
-    })
-    .addCase(selectOption, (state, action) => {
-      console.error(action);
     })
 });
 

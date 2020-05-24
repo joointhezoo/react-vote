@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import cn from 'classnames';
 import styled from '@emotion/styled';
 import {css} from '@emotion/core';
-import {Poll, deletePoll} from 'ducks';
+import {Poll, deletePoll, selectOption} from 'ducks';
 import {userNameSelector} from 'selectors';
 import Title from 'components/base/Title';
 import Button from 'components/base/Button';
@@ -68,13 +68,7 @@ export default ({id, status, question, writer, options}: Poll) => {
   };
 
   const _handleCheck = (index: number) => {
-    const temp =  options.map((option, i) => {
-      return {
-        ...option,
-        voter: i === index ? option.voter.includes(name) ? option.voter : [...option.voter, name] :
-          option.voter.includes(name) ? option.voter.splice(i, 1) : option.voter
-      };
-    });
+    dispatch(selectOption({id, index}))
   };
 
   const _renderDetail = () => {

@@ -1,22 +1,23 @@
 import {Epic, combineEpics} from 'redux-observable';
 import {filter, map, switchMap} from 'rxjs/operators';
-import {addPoll, deletePoll, toggleModal, updatePoll, selectOption, Poll} from 'ducks';
+import {addPoll, deletePoll, toggleModal, updatePoll, selectOption, OptionItem} from 'ducks';
 import {uniquePollId} from 'utils';
-import user from "../ducks/user";
 
 const addPollList$$: Epic = (action$, state$) => action$.pipe(
   filter(addPoll.match),
   switchMap(({payload: {question, options}}) => {
     const {poll: {poll}, user: {userName}} = state$.value;
-    const pollData = [
+    const makeId = uniquePollId();
+    const pollData = {
       ...poll,
-      {
-      id: uniquePollId(),
-      writer: userName,
-      question,
-      options,
-      status: 'pending',
-    }];
+      [makeId] : {
+        id: makeId,
+        writer: userName,
+        question,
+        options,
+        status: 'pending',
+      }
+    };
     return [
       updatePoll(pollData),
       toggleModal()
@@ -28,7 +29,9 @@ const deletePollList$$: Epic = (action$, state$) => action$.pipe(
   filter(deletePoll.match),
   map(({payload}) => {
     const {poll: {poll}} = state$.value;
-    const pollData = poll.filter(({id}: Pick<Poll, 'id'>) => id !== payload);
+    const pollData = {...poll};
+    delete pollData[payload];
+
     return updatePoll(pollData);
   })
 );
@@ -37,21 +40,22 @@ const selectOption$$: Epic = (action$, state$) => action$.pipe(
   filter(selectOption.match),
   map(({payload: {id, index}}) => {
     const {poll: {poll}, user: {userName}} = state$.value;
-    /*const pollData = poll.map((detail: Poll) => {
-      if (detail.id === id) {
-        return {
-          ...detail,
-          options: detail.options.map((option, i) => {
-            if (i === index) {
-              !option.voter.includes(userName) && option.voter.push(userName);
-            }
-            return option;
-          })
-        }
+    const pollData = {
+      ...poll,
+      [id]: {
+        ...poll[id],
+        options: poll[id].options.map((option: OptionItem, i: number) => {
+          return {
+            ...option,
+            voter: [
+              ...option.voter.filter(name => name !== userName),
+              ...index ===i ? [userName] : []
+            ]
+          };
+        })
       }
-      return detail
-    });*/
-    return updatePoll(poll);
+    };
+    return updatePoll(pollData);
   })
 );
 
