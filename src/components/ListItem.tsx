@@ -7,12 +7,11 @@ import Title from 'components/base/Title';
 import Chevron from 'components/svg/Chevron';
 import WriterEdit from 'components/WriterEdit';
 import ListItemDetail from 'components/ListItemDetail';
-import {DateYYYYMMDDHHMM} from 'utils';
+import {DateYYYYMMDDHHMM, getStatus} from 'utils';
 
-export default ({id, voted, status, startDate, endDate, question, writer, options}: Poll) => {
+export default ({id, voted, startDate, endDate, question, writer, options}: Poll) => {
   const [open, toggleOpen] = useState(false);
   const name = useSelector(userNameSelector);
-
   const _renderTitle = () => {
     return (
       <Title>
@@ -24,7 +23,7 @@ export default ({id, voted, status, startDate, endDate, question, writer, option
           border-radius: 4px;
           padding: 4px;
           margin: 0 8px 0 0;
-        `}>{status}</span>
+        `}>{getStatus(startDate, endDate)}</span>
         <div css={css`flex: 1;`}>
           {question}
         </div>
@@ -40,7 +39,7 @@ export default ({id, voted, status, startDate, endDate, question, writer, option
     )
   };
 
-  const pollData = {id, voted, status, startDate, endDate, question, writer, options};
+  const pollData = {id, voted, startDate, endDate, question, writer, options};
   return (
     <div css={css`margin: 16px 0;`}>
       {_renderTitle()}

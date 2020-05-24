@@ -16,3 +16,11 @@ export const getEpochTime = (inputDate: string) => {
 export const DateYYYYMMDDHHMM = (epoch: number) => {
   return format(epoch, 'yyyy-MM-dd HH:mm')
 };
+
+export const getStatus = (startDate: number, endDate: number) => {
+  const nowDate = new Date;
+  const now = nowDate.valueOf();
+  if (now < startDate) return 'pending';
+  if (now > endDate) return 'ended';
+  return 'ongoing';
+};

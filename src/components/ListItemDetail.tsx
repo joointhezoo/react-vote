@@ -6,6 +6,7 @@ import {css} from '@emotion/core';
 import {Poll, selectOption, OptionItem, votePoll} from 'ducks';
 import {userNameSelector} from 'selectors';
 import Button from 'components/base/Button';
+import {getStatus} from 'utils';
 
 const Item = styled.li({
   display: 'flex',
@@ -33,8 +34,9 @@ const Item = styled.li({
   }
 });
 
-export default ({id, voted, status, options}: Poll) => {
+export default ({id, voted, startDate, endDate, options}: Poll) => {
   const dispatch = useDispatch();
+  const status = getStatus(startDate, endDate);
   const name = useSelector(userNameSelector);
   const isEnd = status === 'ended' || voted;
   const canVoted = status === 'ongoing' && !voted;

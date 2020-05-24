@@ -16,8 +16,7 @@ const addPollList$$: Epic = (action$, state$) => action$.pipe(
         question,
         options,
         startDate,
-        endDate,
-        status: 'pending',
+        endDate
       }
     };
     return [

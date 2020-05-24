@@ -21,7 +21,6 @@ export interface Poll {
   startDate: number;
   endDate: number;
   writer: string;
-  status: 'pending' | 'ongoing' | 'ended';
   question: string;
   options: OptionItem[];
   voted: boolean;
@@ -55,7 +54,6 @@ export const INITIAL_STATE: State = {
         {title: 'escape room', voter: ['jin']},
         {title: 'Bowling', voter: ['kai7v2ut']},
       ],
-      status: 'ongoing',
       voted: false
     },
     'asd123a':  {
@@ -69,7 +67,6 @@ export const INITIAL_STATE: State = {
         {title: 'hamburger', voter: ['jin']},
         {title: 'salad', voter: []}
       ],
-      status: 'ended',
       voted: true
     }
   }
