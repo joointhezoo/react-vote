@@ -84,7 +84,6 @@ const poll = createReducer(INITIAL_STATE, builder => {
       state.selectedPoll = action.payload
     })
     .addCase(votePoll, (state, action) => {
-      console.error(action.payload);
       state.poll = {
         ...state.poll,
         [action.payload]: {

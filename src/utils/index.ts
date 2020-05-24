@@ -18,7 +18,7 @@ export const DateYYYYMMDDHHMM = (epoch: number) => {
 };
 
 export const getStatus = (startDate: number, endDate: number) => {
-  const nowDate = new Date;
+  const nowDate = new Date();
   const now = nowDate.valueOf();
   if (now < startDate) return 'pending';
   if (now > endDate) return 'ended';
