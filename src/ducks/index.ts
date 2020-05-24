@@ -6,12 +6,13 @@ export const addPoll = createAction<Poll>('ADD_POLL');
 export const deletePoll = createAction<Pick<Poll, 'id'>>('DELETE_POLL');
 export const updatePoll = createAction<Poll[]>('UPDATE_POLL');
 export const toggleModal = createAction('TOGGLE_MODAL');
+export const selectOption = createAction<any>('SELECT_OPTION');
 
 
 export interface Poll {
   id?: string;
   writer?: string;
-  status?: string;
+  status?: 'pending' | 'ongoing' | 'ended';
   question?: string;
   options: OptionItem[];
 }
@@ -38,7 +39,7 @@ export const INITIAL_STATE: State = {
         {title: 'escape room', voter: ['jin']},
         {title: 'Bowling', voter: ['kai7v2ut']}
       ],
-      status: 'fulfilled',
+      status: 'ongoing',
     },
     {
       id: 'asd123a',
@@ -61,6 +62,9 @@ const poll = createReducer(INITIAL_STATE, builder => {
     })
     .addCase(updatePoll, (state, action) => {
       state.poll = action.payload
+    })
+    .addCase(selectOption, (state, action) => {
+      console.error(action);
     })
 });
 
