@@ -1,6 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
 import styled from '@emotion/styled';
+import {black2, black3, white1, white2} from 'styles/colors';
 
 interface Props {
   theme?: 'solid' | 'line';
@@ -11,31 +12,32 @@ const Button = styled.button({
   cursor: 'pointer',
   borderRadius: '4px',
   transition: 'all 0.3s ease',
+  border: `1px solid ${black2}`,
   '&.solid': {
-    border: '1px solid #333',
-    background: '#333',
-    color: '#fff',
+    background: black2,
+    color: white1,
   },
   '&.solid:hover': {
-    background: '#666'
+    background: black3
   },
   '&.line': {
-    border: '1px solid #333',
-    background: '#fff',
-    color: '#333',
+    background: white1,
+    color: black2,
+  },
+  '&.line:hover': {
+    background: white2
   }
 });
 
 export default ({
   children,
-  disabled,
   theme = 'solid',
   onClick = () => {},
   style,
   type
 }: Props & JSX.IntrinsicElements['button']) => {
   return (
-    <Button type={type} className={cn(theme)} disabled={disabled} onClick={onClick} style={style}>
+    <Button type={type} className={cn(theme)} onClick={onClick} style={style}>
       {children}
     </Button>
   );

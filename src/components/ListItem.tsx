@@ -8,10 +8,16 @@ import Chevron from 'components/svg/Chevron';
 import WriterEdit from 'components/WriterEdit';
 import ListItemDetail from 'components/ListItemDetail';
 import {DateYYYYMMDDHHMM, getStatus} from 'utils';
+import {white1} from 'styles/colors';
 
-export default ({id, voted, startDate, endDate, question, writer, options}: Poll) => {
+interface Props {
+  poll: Poll
+}
+
+export default ({poll}: Props) => {
   const [open, toggleOpen] = useState(false);
   const name = useSelector(userNameSelector);
+  const {id, startDate, endDate, question, writer} = poll;
   const _renderTitle = () => {
     return (
       <Title>
@@ -27,25 +33,29 @@ export default ({id, voted, startDate, endDate, question, writer, options}: Poll
         <div css={css`flex: 1;`}>
           {question}
         </div>
-        <span css={css`letter-spacing: -1.2px; font-size: 12px; text-align: right; margin: 0 8px 0 0;`}>
+        <span css={css`
+          letter-spacing: -1.2px;
+          font-size: 12px;
+          text-align: right;
+          margin: 0 8px 0 0;
+        `}>
           {DateYYYYMMDDHHMM(startDate)}<br/>~{DateYYYYMMDDHHMM(endDate)}
         </span>
         <span css={css`
-          font-size :12px;
+          font-size: 12px;
           padding: 4px;
         `}>{writer}</span>
-        <Chevron onClick={() => toggleOpen(!open)} fill={'#fff'} pointAt={open ? 'up' : 'down'}/>
+        <Chevron onClick={() => toggleOpen(!open)} fill={white1} pointAt={open ? 'up' : 'down'}/>
       </Title>
     )
   };
 
-  const pollData = {id, voted, startDate, endDate, question, writer, options};
   return (
     <div css={css`margin: 16px 0;`}>
       {_renderTitle()}
       {open && (
         <>
-          <ListItemDetail {...pollData}/>
+          <ListItemDetail {...poll}/>
           {writer === name && <WriterEdit id={id}/>}
         </>
       )}

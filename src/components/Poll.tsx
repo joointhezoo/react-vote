@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
@@ -8,28 +8,29 @@ import Modal from 'components/base/Modal';
 import Button from 'components/base/Button';
 import Delete from 'components/svg/Delete';
 import {selectedPollSelector} from 'selectors';
-import {DateYYYYMMDDHHMM, getEpochTime} from 'utils';
+import {getEpochTime} from 'utils';
+import {red1, black1} from 'styles/colors';
 
 const Input = styled.input({
   width: 'calc(100% - 16px)',
   border: '1px solid #ddd',
   padding: '8px',
   borderRadius: '4px',
-  color: '#020202',
+  color: black1,
   transition: 'all 0.3s ease',
   margin: '8px 0 0'
 });
 
 const Title = styled.p({
-  color: '#020202',
+  color: black1,
   fontSize: '24px',
   fontWeight: 700,
-  margin: '16px'
+  margin: '16px 0'
 });
 
 const Label = styled.label({
   margin: '8px 0 0',
-  color: '#020202',
+  color: black1,
   fontSize: '14px',
   fontWeight: 700,
   display: 'flex',
@@ -39,7 +40,7 @@ const Label = styled.label({
   }
 });
 const Warning = styled.label({
-  color: '#f44336',
+  color: red1,
   fontSize: '12px',
   margin: '4px 0',
 });
@@ -49,13 +50,10 @@ interface Props {
 export default ({onClose}: Props) => {
   const dispatch = useDispatch();
   const selectedPoll = useSelector(selectedPollSelector);
-  const {register, handleSubmit, setValue, getValues, errors} = useForm({
-    validateCriteriaMode: "all"
-  });
+  const {register, handleSubmit, setValue, getValues, errors} = useForm();
   const [options, setOptions] = useState(selectedPoll ?
     selectedPoll.options.flatMap(({title}) => ({title})) :
     [{title: ""}, {title: ""}, {title: ""}]);
-
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
@@ -64,10 +62,11 @@ export default ({onClose}: Props) => {
 
   useEffect(() => {
     if (selectedPoll) {
-      setValue('question', selectedPoll.question);
-      setValue('startDate', DateYYYYMMDDHHMM(selectedPoll.startDate));
-      setValue('endDate', DateYYYYMMDDHHMM(selectedPoll.endDate));
-      selectedPoll.options.forEach(({title}, i) => {
+      const {question, startDate, endDate, options} = selectedPoll;
+      setValue('question', question);
+      setValue('startDate', startDate);
+      setValue('endDate', endDate);
+      options.forEach(({title}, i) => {
         setValue(`option${i+1}`, title);
       })
     }
@@ -78,7 +77,7 @@ export default ({onClose}: Props) => {
       .filter(val => val.startsWith('option'))
       .map((key, index) => ({
         title: value[key],
-        voter: [...selectedPoll ? selectedPoll.options[index]?.voter || [] : []]
+        voter: selectedPoll ? selectedPoll.options[index]?.voter|| [] : []
       }));
     const {question, startDate, endDate} = value;
     const data = {
@@ -92,9 +91,7 @@ export default ({onClose}: Props) => {
       dispatch(addPoll(data));
   });
 
-  const _addOptions = () => {
-    setOptions([...options, {title: ""}])
-  };
+  const _addOptions = () => setOptions([...options, {title: ""}]);
 
   const _deleteOptions = (i: number) => {
     if (options.length > 3) {
@@ -149,16 +146,20 @@ export default ({onClose}: Props) => {
           </div>
           {options.map((_, i) => {
             return (
-              <>
+              <Fragment key={`new-option-${i}`}>
                 <Label>Option{i+1}<Delete onClick={() => _deleteOptions(i)}/></Label>
                 <Input name={`option${i+1}`} ref={register({
                   validate: value => value !== ""
                 })}/>
                 {errors[`option${i+1}`] && <Warning>fill in option</Warning>}
-              </>
+              </Fragment>
             )
           })}
-          <div css={css`display: flex; flex-direction: column`}>
+          <div css={css`
+            display: flex;
+            flex-direction: column;
+            margin: 24px 0 0;
+          `}>
             <Button theme="line" type="button" onClick={() => _addOptions()}>Add more Options</Button>
             {!!msg && <Warning>{msg}</Warning>}
             <Button type="submit">{selectedPoll ? 'Modify' : 'Create'}</Button>

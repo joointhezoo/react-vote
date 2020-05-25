@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {useSelector} from 'react-redux';
 import styled from '@emotion/styled';
 import {Poll} from 'ducks';
@@ -15,13 +15,11 @@ export default () => {
 
   return (
     <List>
-      {list.map((item: Poll) => {
-        return (
-          <div key={item.id}>
-            <ListItem {...item}/>
-          </div>
-        )
-      })}
+      {list.map((poll: Poll) => (
+        <Fragment key={poll.id}>
+          <ListItem poll={poll}/>
+        </Fragment>
+      ))}
     </List>
   );
 };

@@ -1,20 +1,22 @@
 import React, {useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {css} from '@emotion/core';
+import {selectPoll, toggleModal} from 'ducks';
+import {modalSelector} from 'selectors';
 import List from 'components/List';
 import Button from 'components/base/Button';
 import Header from 'components/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {modalSelector} from 'selectors';
 import Poll from 'components/Poll';
-import {selectPoll, toggleModal} from 'ducks';
 
 export default () => {
   const dispatch = useDispatch();
   const openModal = useSelector(modalSelector);
+
   const _handleCloseModal = useCallback(() => {
     dispatch(selectPoll(null));
     dispatch(toggleModal());
   }, [dispatch]);
+
   return (
     <div css={css`
       max-width: 720px;
