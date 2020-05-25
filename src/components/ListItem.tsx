@@ -11,7 +11,7 @@ import {DateYYYYMMDDHHMM, getStatus} from 'utils';
 import {white1} from 'styles/colors';
 
 interface Props {
-  poll: Poll
+  poll: Poll;
 }
 
 export default ({poll}: Props) => {

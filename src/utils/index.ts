@@ -1,7 +1,7 @@
 import {format} from 'date-fns';
 
 export const createUserName = () => {
-  return Date.now().toString(36);
+  return (Date.now() +  Math.floor(Math.random() * 10)).toString(36).substr(2);
 };
 
 export const uniquePollId = () => {

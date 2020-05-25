@@ -3,7 +3,7 @@ import {filter, map, switchMap} from 'rxjs/operators';
 import {addPoll, deletePoll, toggleModal, updatePoll, selectOption, OptionItem, modifyPoll} from 'ducks';
 import {uniquePollId} from 'utils';
 
-const addPollList$$: Epic = (action$, state$) => action$.pipe(
+export const addPollList$$: Epic = (action$, state$) => action$.pipe(
   filter(addPoll.match),
   switchMap(({payload: {startDate, endDate, question, options}}) => {
     const {poll: {poll}, user: {userName}} = state$.value;
@@ -26,7 +26,7 @@ const addPollList$$: Epic = (action$, state$) => action$.pipe(
   })
 );
 
-const deletePollList$$: Epic = (action$, state$) => action$.pipe(
+export const deletePollList$$: Epic = (action$, state$) => action$.pipe(
   filter(deletePoll.match),
   map(({payload}) => {
     const {poll: {poll}} = state$.value;
@@ -37,7 +37,7 @@ const deletePollList$$: Epic = (action$, state$) => action$.pipe(
   })
 );
 
-const selectOption$$: Epic = (action$, state$) => action$.pipe(
+export const selectOption$$: Epic = (action$, state$) => action$.pipe(
   filter(selectOption.match),
   map(({payload: {id, index}}) => {
     const {poll: {poll}, user: {userName}} = state$.value;
@@ -60,7 +60,7 @@ const selectOption$$: Epic = (action$, state$) => action$.pipe(
   })
 );
 
-const modifyPoll$$: Epic = (action$, state$) => action$.pipe(
+export const modifyPoll$$: Epic = (action$, state$) => action$.pipe(
   filter(modifyPoll.match),
   switchMap(({payload}) => {
     const {poll: {poll}} = state$.value;
